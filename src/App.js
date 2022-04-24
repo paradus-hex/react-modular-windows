@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import UsersList from "./components/Users/UsersList";
+
+import AddUser from "./components/Users/AddUser";
+import ErrorModal from "./components/UI/ErrorModal";
 
 function App() {
+  const [usersList, setUsersList] = useState([]);
+  const usersListHandler = (userAge, userName) => {
+    setUsersList((prevUsersList) => {
+      return [
+        ...prevUsersList,
+        { name: userName, age: userAge, id: Math.random().toString() },
+      ];
+    });
+  };
+  const [error, setError] = useState();
+
+  const errorHandler = (error) => {
+    setError(error);
+  };
+
+  const closeHandler = () => {
+    setError(null);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onClose={closeHandler}
+        />
+      )}
+      <AddUser onAddUser={usersListHandler} onError={errorHandler} />
+      <UsersList users={usersList} />
     </div>
   );
 }
